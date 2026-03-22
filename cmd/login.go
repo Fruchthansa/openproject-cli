@@ -105,6 +105,10 @@ func parseHostUrl() (ok bool, errMessage string, host *url.URL) {
 	input = common.SanitizeLineBreaks(input)
 	input = strings.TrimSuffix(input, "/")
 
+	if !strings.Contains(input, "://") {
+		input = "https://" + input
+	}
+
 	printer.Debug(Verbose, fmt.Sprintf("Sanitized input '%s'.", input))
 	printer.Debug(Verbose, "Parsing input as url ...")
 
@@ -118,7 +122,7 @@ func parseHostUrl() (ok bool, errMessage string, host *url.URL) {
 	printer.Debug(Verbose, "Checking for http host and scheme ...")
 
 	if parsed.Scheme == "" || parsed.Host == "" {
-		return false, missingSchemeError, nil
+		return false, urlInputError, nil
 	}
 
 	printer.Debug(Verbose, "Parsing input successful, continuing with next steps.")
